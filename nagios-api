@@ -19,6 +19,7 @@ import datetime
 import os
 import re
 import sys
+import threading
 import time
 import types
 import atexit
@@ -908,7 +909,8 @@ def main(argv):
     app.add_loop(Loop(read_status, options.statusfile), keep_alive=True)
     if os.path.isfile(options.logfile):
         LOG_ENABLED = True
-        app.add_loop(Loop(read_log, options.logfile), keep_alive=True)
+        thread = threading.Thread(target=read_log, args=(options.logfile,))
+        thread.start()
     app.run()
     return 1
 
